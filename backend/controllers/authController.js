@@ -46,22 +46,31 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Bitte E-Mail und Passwort angeben." });
+  }
+
   try {
-    const user = await db('users').where({ email }).first();
-    if (!user) return res.status(401).json({ error: 'User nicht gefunden' });
+    const user = await knex("users").where({ email }).first();
 
-    const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(401).json({ error: 'Falsches Passwort' });
+    if (!user) {
+      return res.status(401).json({ error: "E-Mail oder Passwort ist ungültig." });
+    }
 
-    const token = jwt.sign(
-      { id: user.id, is_admin: user.is_admin },
-      process.env.JWT_SECRET,
-      { expiresIn: '2h' }
-    );
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-    res.json({ token, user: { id: user.id, name: user.name, email: user.email, is_admin: user.is_admin } });
-  } catch (err) {
-    res.status(500).json({ error: 'Login fehlgeschlagen', detail: err.message });
+    if (!isPasswordCorrect) {
+      return res.status(401).json({ error: "E-Mail oder Passwort ist ungültig." });
+    }
+
+    res.status(200).json({
+      message: "Login erfolgreich",
+      user: { id: user.id, name: user.name, email: user.email },
+    });
+  } catch (error) {
+    console.error("Login fehlgeschlagen:", error);
+    res.status(500).json({ error: "Login fehlgeschlagen" });
   }
 };
 
