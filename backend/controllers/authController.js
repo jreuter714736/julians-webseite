@@ -44,6 +44,8 @@ const register = async (req, res) => {
   }
 };
 
+const jwt = require('jsonwebtoken'); // stelle sicher, dass das oben importiert ist
+
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -64,8 +66,17 @@ const login = async (req, res) => {
       return res.status(401).json({ error: "E-Mail oder Passwort ist ungültig." });
     }
 
+    // ✅ JWT erzeugen
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // ✅ Antwort mit Token
     res.status(200).json({
       message: "Login erfolgreich",
+      token,
       user: { id: user.id, name: user.name, email: user.email },
     });
   } catch (error) {
@@ -73,5 +84,7 @@ const login = async (req, res) => {
     res.status(500).json({ error: "Login fehlgeschlagen" });
   }
 };
+
+
 
 module.exports = { register, login };
