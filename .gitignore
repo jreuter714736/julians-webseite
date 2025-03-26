@@ -1,3 +1,40 @@
-node_modules/
-.env
+# 👉 Allgemeines
 .DS_Store
+Thumbs.db
+.env
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 👉 VS Code
+.vscode/
+
+# 👉 node_modules global (falls versehentlich im Root)
+node_modules/
+
+# 👉 Frontend (z. B. React oder Vite)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env
+frontend/.next/
+frontend/.turbo/
+frontend/.cache/
+
+# 👉 Backend (Express + Knex)
+backend/node_modules/
+backend/.env
+backend/migrations/*.lock
+backend/seeds/*.lock
+
+# 👉 Docker
+**/Dockerfile
+**/.dockerignore
+**/docker-compose.override.yml
+
+# 👉 Sonstiges
+*.sqlite
+*.sqlite3
+*.swp
+*.swo
