@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./db/knex');
 const authRoutes = require('./routes/auth');
+const db = require('./knex');
+
 require('dotenv').config();
 
 const app = express();

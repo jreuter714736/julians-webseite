@@ -20,7 +20,7 @@ services:
     volumes:
       - ./backend:/app
     working_dir: /app
-    command: node src/server.js
+    command: node server.js
 
 volumes:
   pgdata:

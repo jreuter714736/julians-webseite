@@ -1,6 +1,6 @@
 // backend/src/controllers/authController.js
-const db = require('../db/knex');
-const bcrypt = require('bcrypt');
+const db = require('../knex');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
