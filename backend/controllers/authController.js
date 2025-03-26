@@ -6,15 +6,29 @@ require('dotenv').config();
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
-  try {
-    const hashed = await bcrypt.hash(password, 10);
-    const [user] = await db('users')
-      .insert({ name, email, password: hashed })
-      .returning(['id', 'name', 'email']);
 
-    res.status(201).json(user);
-  } catch (err) {
-    res.status(400).json({ error: 'Registrierung fehlgeschlagen', detail: err.message });
+  if (!name || !email || !password) {
+    return res.status(400).json({ error: "Bitte alle Felder ausfüllen." });
+  }
+
+  // E-Mail auf Existenz prüfen
+  try {
+    const existingUser = await knex("users").where({ email }).first();
+    if (existingUser) {
+      return res.status(400).json({ error: "Diese E-Mail ist bereits registriert." });
+    }
+
+    // Passwort verschlüsseln
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await knex("users")
+      .insert({ name, email, password: hashedPassword })
+      .returning(["id", "name", "email"]);
+
+    res.status(201).json({ user: newUser[0] });
+  } catch (error) {
+    console.error("Registrierung fehlgeschlagen:", error);
+    res.status(500).json({ error: "Registrierung fehlgeschlagen" });
   }
 };
 
