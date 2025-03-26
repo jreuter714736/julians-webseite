@@ -7,18 +7,30 @@ require('dotenv').config();
 const register = async (req, res) => {
   const { name, email, password } = req.body;
 
+  // Felder prüfen
   if (!name || !email || !password) {
     return res.status(400).json({ error: "Bitte alle Felder ausfüllen." });
   }
 
-  // E-Mail auf Existenz prüfen
+  // Passwort-Stärke prüfen
+  const isStrong =
+    password.length >= 8 && /[A-Za-z]/.test(password) && /\d/.test(password);
+
+  if (!isStrong) {
+    return res.status(400).json({
+      error:
+        "Passwort muss mindestens 8 Zeichen lang sein und mindestens einen Buchstaben und eine Zahl enthalten.",
+    });
+  }
+
   try {
+    // Existierende E-Mail prüfen
     const existingUser = await knex("users").where({ email }).first();
     if (existingUser) {
       return res.status(400).json({ error: "Diese E-Mail ist bereits registriert." });
     }
 
-    // Passwort verschlüsseln
+    // Passwort hashen
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await knex("users")
