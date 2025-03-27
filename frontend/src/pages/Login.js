@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation(); // 👈 gefixter Hook
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,7 +21,9 @@ const Login = () => {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         alert("Login erfolgreich!");
-        // TODO: Weiterleitung auf geschützte Seite
+
+        const from = location.state?.from?.pathname || "/";
+        navigate(from, { replace: true });
       } else {
         alert(data.error || "Login fehlgeschlagen");
       }
@@ -27,6 +32,7 @@ const Login = () => {
       alert("Fehler beim Login");
     }
   };
+
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
