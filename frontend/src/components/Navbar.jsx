@@ -51,10 +51,10 @@ const Navbar = () => {
 
         {isAdmin && (
           <>
-            <Link to="/admin" className="hover:underline">
-              Admin-Dashboard
+            <Link to="/admin/dashboard" className="hover:underline">
+              Dashboard
             </Link>
-            <Link to="/admin/products" className="hover:underline">
+            <Link to="/admin/productlist" className="hover:underline">
               Produkte verwalten
             </Link>
           </>

@@ -9,22 +9,34 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+  
     try {
       const res = await fetch("http://localhost:4000/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await res.json();
+  
       if (res.ok) {
         localStorage.setItem("token", data.token);
         alert("Login erfolgreich!");
-
-        const from = location.state?.from?.pathname || "/";
-        navigate(from, { replace: true });
-        window.location.reload(); 
+  
+        // 🔐 Admin-Status direkt aus dem JWT auslesen
+        const payload = JSON.parse(atob(data.token.split(".")[1]));
+        const isAdmin = payload.is_admin === true;
+  
+        // ➤ Admins zu /dashboard, andere zurück zur ursprünglichen Seite oder /shop
+        if (isAdmin) {
+          navigate("/dashboard", { replace: true });
+        } else {
+          const from = location.state?.from?.pathname || "/";
+          navigate(from, { replace: true });
+        }
+  
+        // ⟳ Seite neu laden, damit Navbar reagiert
+        window.location.reload();
       } else {
         alert(data.error || "Login fehlgeschlagen");
       }
@@ -33,6 +45,8 @@ const Login = () => {
       alert("Fehler beim Login");
     }
   };
+  
+  
 
 
   return (
