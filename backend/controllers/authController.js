@@ -1,7 +1,8 @@
 // backend/src/controllers/authController.js
-const db = require('../knex');
+const knex = require('../knex');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 require('dotenv').config();
 
 const register = async (req, res) => {
@@ -43,8 +44,6 @@ const register = async (req, res) => {
     res.status(500).json({ error: "Registrierung fehlgeschlagen" });
   }
 };
-
-const jwt = require('jsonwebtoken'); // stelle sicher, dass das oben importiert ist
 
 const login = async (req, res) => {
   const { email, password } = req.body;

@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -7,13 +9,34 @@ exports.seed = async function(knex) {
   await knex('products').del();
   await knex('users').del();
 
+  // Passwörter hashen
+  const passwordJonathan = await bcrypt.hash('P@sswort123', 10);
+  const passwordViola = await bcrypt.hash('Passwort456', 10);
+  const passwordFlorian = await bcrypt.hash('Geheim789', 10);
+
   // Users einfügen
   const [user1] = await knex('users')
     .insert({
       name: 'Jonathan',
       email: 'jonathan@example.com',
-      password: '$2b$10$hBrBxHTvnzVkFf6dQVuQGeP0rDRFXDLhAYr3iXN8FgE.0AP9OtUtW', // bcrypt für "pass123"
+      password: passwordJonathan,
       is_admin: true
+    })
+    .returning('*');
+
+  const [user2] = await knex('users')
+    .insert({
+      name: 'Viola',
+      email: 'viola@example.com',
+      password: passwordViola
+    })
+    .returning('*');
+
+  const [user3] = await knex('users')
+    .insert({
+      name: 'Florian',
+      email: 'florian@example.com',
+      password: passwordFlorian
     })
     .returning('*');
 
