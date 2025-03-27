@@ -24,6 +24,7 @@ const Login = () => {
 
         const from = location.state?.from?.pathname || "/";
         navigate(from, { replace: true });
+        window.location.reload(); 
       } else {
         alert(data.error || "Login fehlgeschlagen");
       }

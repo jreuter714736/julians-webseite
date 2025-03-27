@@ -4,14 +4,28 @@ import { useEffect, useState } from "react";
 const Navbar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("token"));
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        setIsAdmin(payload.is_admin === true); // ✅ Statt role
+      } catch (err) {
+        console.error("Fehler beim Token-Parsing:", err);
+        setIsAdmin(false);
+      }
+    }
   }, []);
+  
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    setIsAdmin(false);
     navigate("/login");
   };
 
@@ -31,6 +45,17 @@ const Navbar = () => {
             </Link>
             <Link to="/register" className="hover:underline">
               Registrieren
+            </Link>
+          </>
+        )}
+
+        {isAdmin && (
+          <>
+            <Link to="/admin" className="hover:underline">
+              Admin-Dashboard
+            </Link>
+            <Link to="/admin/products" className="hover:underline">
+              Produkte verwalten
             </Link>
           </>
         )}
