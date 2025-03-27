@@ -3,61 +3,90 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const EditProduct = () => {
   const { id } = useParams();
-  const [product, setProduct] = useState({ name: "", price: "" });
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const [product, setProduct] = useState({
+    title: "",
+    description: "",
+    price: "",
+    image_url: "",
+  });
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      const res = await fetch(`http://localhost:4000/api/products/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+    fetch(`http://localhost:4000/api/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => setProduct(data))
+      .catch((err) => {
+        console.error("Fehler beim Laden:", err);
+        alert("Produkt konnte nicht geladen werden");
       });
-      const data = await res.json();
-      setProduct(data);
-    };
-    fetchProduct();
-  }, [id, token]);
+  }, [id]);
+
+  const handleChange = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem("token");
 
-    const res = await fetch(`http://localhost:4000/api/products/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(product),
-    });
+    try {
+      const res = await fetch(`http://localhost:4000/api/products/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(product),
+      });
 
-    if (res.ok) {
-      alert("Produkt aktualisiert!");
-      navigate("/admin");
-    } else {
-      alert("Fehler beim Aktualisieren");
+      if (res.ok) {
+        alert("Produkt aktualisiert");
+        navigate("/admin/productlist"); // ✅ zurück zur Liste
+      } else {
+        const data = await res.json();
+        alert(data.error || "Fehler beim Aktualisieren");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Serverfehler");
     }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Produkt bearbeiten</h1>
-      <form onSubmit={handleSubmit} className="max-w-md space-y-4">
+    <div className="p-4 max-w-md mx-auto">
+      <h2 className="text-xl font-bold mb-4">Produkt bearbeiten</h2>
+      <form onSubmit={handleSubmit} className="space-y-3">
         <input
-          type="text"
-          value={product.name}
-          onChange={(e) => setProduct({ ...product, name: e.target.value })}
-          className="w-full p-2 border rounded"
+          name="title"
+          value={product.title}
+          onChange={handleChange}
+          className="w-full border p-2"
           required
+        />
+        <textarea
+          name="description"
+          value={product.description}
+          onChange={handleChange}
+          className="w-full border p-2"
         />
         <input
           type="number"
-          step="0.01"
+          name="price"
           value={product.price}
-          onChange={(e) => setProduct({ ...product, price: e.target.value })}
-          className="w-full p-2 border rounded"
+          onChange={handleChange}
+          className="w-full border p-2"
           required
         />
-        <button type="submit" className="bg-yellow-500 text-white px-4 py-2 rounded">
+        <input
+          name="image_url"
+          value={product.image_url}
+          onChange={handleChange}
+          className="w-full border p-2"
+        />
+        <button
+          type="submit"
+          className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+        >
           Speichern
         </button>
       </form>
