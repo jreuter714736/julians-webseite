@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -17,7 +18,7 @@ const EditProduct = () => {
       .then((data) => setProduct(data))
       .catch((err) => {
         console.error("Fehler beim Laden:", err);
-        alert("Produkt konnte nicht geladen werden");
+        toast.error("Produkt konnte nicht geladen werden");
       });
   }, [id]);
 
@@ -44,11 +45,11 @@ const EditProduct = () => {
         navigate("/admin/productlist"); // ✅ zurück zur Liste
       } else {
         const data = await res.json();
-        alert(data.error || "Fehler beim Aktualisieren");
+        toast.error("Fehler beim Aktualisieren");
       }
     } catch (err) {
       console.error(err);
-      alert("Serverfehler");
+      toast.error("Server fehler");
     }
   };
 

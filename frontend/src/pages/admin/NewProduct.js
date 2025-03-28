@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const NewProduct = () => {
   const [title, setTitle] = useState("");
@@ -23,11 +24,11 @@ const NewProduct = () => {
       });
 
       if (res.ok) {
-        alert("Produkt erfolgreich erstellt");
+        toast.success("Produkt erfolgreich erstellt");
         navigate("/admin/productlist"); // ✅ zurück zur Produktliste
       } else {
         const data = await res.json();
-        alert(data.error || "Fehler beim Erstellen");
+        toast.error("Fehler beim Erstellen");
       }
     } catch (err) {
       console.error(err);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -33,7 +34,7 @@ const ProductList = () => {
       fetchProducts();
     } catch (err) {
       console.error("Fehler beim Löschen:", err);
-      alert("Löschen fehlgeschlagen");
+      toast.error("löschen fehlgeschlagen");
     }
   };
 

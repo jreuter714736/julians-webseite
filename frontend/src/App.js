@@ -11,7 +11,8 @@ import ProductList from "./pages/admin/ProductList";
 import NewProduct from "./pages/admin/NewProduct";
 import EditProduct from "./pages/admin/EditProduct";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
@@ -28,6 +29,8 @@ function App() {
         <Route path="/admin/edit/:id" element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
       </Routes>
+      <ToastContainer position="bottom-right" />
+
     </Router>
   );
 }
