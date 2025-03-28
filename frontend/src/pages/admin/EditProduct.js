@@ -6,7 +6,7 @@ const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState({
-    title: "",
+    name: "",
     description: "",
     price: "",
     image_url: "",
@@ -58,8 +58,8 @@ const EditProduct = () => {
       <h2 className="text-xl font-bold mb-4">Produkt bearbeiten</h2>
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
-          name="title"
-          value={product.title}
+          name="name"
+          value={product.name}
           onChange={handleChange}
           className="w-full border p-2"
           required

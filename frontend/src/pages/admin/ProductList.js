@@ -59,8 +59,8 @@ const ProductList = () => {
             <div>
               <p className="font-semibold">{p.name}</p>
               <p className="text-sm text-gray-600">€{Number(p.price).toFixed(2)}</p>
-              {p.image && (
-                <img src={p.image} alt={p.name} className="w-16 h-16 mt-2 rounded" />
+              {p.image_url && (
+                <img src={p.image_url}  className="w-16 h-16 mt-2 rounded" />
               )}
             </div>
             <div className="flex gap-4">

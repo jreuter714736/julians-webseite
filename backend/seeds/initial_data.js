@@ -43,14 +43,14 @@ exports.seed = async function(knex) {
   // Produkte einfügen
   await knex('products').insert([
     {
-      title: 'Selbstgemachtes Armband',
+      name: 'Selbstgemachtes Armband',
       description: 'Handgemacht mit Liebe',
       price: 12.99,
       image_url: 'https://example.com/image1.jpg',
       user_id: user1.id
     },
     {
-      title: 'Design-Postkarte',
+      name: 'Design-Postkarte',
       description: 'Individuelles Motiv auf Recyclingpapier',
       price: 2.50,
       image_url: 'https://example.com/image2.jpg',

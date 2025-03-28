@@ -1,37 +1,55 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-
-const DUMMY_PRODUCTS = [
-  { id: 1, name: "Produkt A", price: 19.99 },
-  { id: 2, name: "Produkt B", price: 29.99 },
-  { id: 3, name: "Produkt C", price: 39.99 },
-];
+import { useEffect, useState } from "react";
+import { useCart } from "../pages/Cart";
+import { toast } from "react-toastify";
 
 const Shop = () => {
-  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const { addToCart } = useCart();
 
-  const handleBuy = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/checkout");
-    } else {
-      navigate("/login", { state: { from: "/checkout" } });
-    }
+  useEffect(() => {
+    fetch("http://localhost:4000/api/products")
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch((err) => {
+        console.error("Fehler beim Laden der Produkte:", err);
+        toast.error("Produkte konnten nicht geladen werden");
+      });
+  }, []);
+
+  const handleAdd = (product) => {
+    addToCart(product);
+    toast.success(`${product.name} wurde zum Warenkorb hinzugefügt`);
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">🛍 Shop</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Shop</h1>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {DUMMY_PRODUCTS.map((product) => (
-          <div key={product.id} className="border rounded p-4 shadow">
-            <h2 className="text-xl font-semibold">{product.name}</h2>
-            <p className="mb-2">💰 {product.price.toFixed(2)} €</p>
+        {products.map((product) => (
+          <div
+            key={product.id}
+            className="border rounded shadow p-4 flex flex-col justify-between"
+          >
+            <div>
+              <h2 className="text-lg font-semibold">{product.name}</h2>
+              <p className="text-gray-600">{product.description}</p>
+              <p className="text-sm text-gray-500 mt-2">
+                €{Number(product.price).toFixed(2)}
+              </p>
+              {product.image && (
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="mt-4 h-32 w-auto object-contain"
+                />
+              )}
+            </div>
             <button
-              onClick={handleBuy}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              onClick={() => handleAdd(product)}
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
             >
-              Jetzt kaufen
+              In den Warenkorb
             </button>
           </div>
         ))}

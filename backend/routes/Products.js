@@ -15,6 +15,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const product = await knex("products").where({ id }).first();
+
+    if (!product) {
+      return res.status(404).json({ error: "Produkt nicht gefunden" });
+    }
+
+    res.json(product);
+  } catch (err) {
+    console.error("Fehler beim Abrufen des Produkts:", err);
+    res.status(500).json({ error: "Fehler beim Abrufen des Produkts" });
+  }
+});
+
 // 🟡 POST /api/products – nur für Admins
 router.post("/", authenticateToken, requireAdmin, async (req, res) => {
   const { name, description, price, image_url } = req.body;

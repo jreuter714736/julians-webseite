@@ -67,7 +67,7 @@ const login = async (req, res) => {
 
     // ✅ JWT erzeugen – inkl. is_admin!
     const token = jwt.sign(
-      { id: user.id, email: user.email, is_admin: user.is_admin },
+      { id: user.id, email: user.email, isAdmin: user.is_admin },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );

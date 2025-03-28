@@ -13,9 +13,12 @@ import EditProduct from "./pages/admin/EditProduct";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { CartProvider } from "./pages/Cart";
+import AdminOrders from "./pages/admin/AdminOrders";
 
 function App() {
   return (
+    <CartProvider>
     <Router>
       <Navbar /> 
       <Routes>
@@ -25,13 +28,14 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
         <Route path="/admin/productlist" element={<ProtectedRoute><ProductList /></ProtectedRoute>} />
+        <Route path="/admin/orders" element={<ProtectedRoute adminOnly={true}><AdminOrders /></ProtectedRoute>}/>
         <Route path="/admin/new" element={<ProtectedRoute><NewProduct /></ProtectedRoute>} />
         <Route path="/admin/edit/:id" element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
         <Route path="/checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
       </Routes>
       <ToastContainer position="bottom-right" />
-
     </Router>
+    </CartProvider>
   );
 }
 

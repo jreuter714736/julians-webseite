@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const NewProduct = () => {
-  const [title, setTitle] = useState("");
+  const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [image_url, setImageUrl] = useState("");
@@ -20,7 +20,7 @@ const NewProduct = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ title, description, price, image_url }),
+        body: JSON.stringify({ name, description, price, image_url }),
       });
 
       if (res.ok) {
@@ -42,9 +42,9 @@ const NewProduct = () => {
       <form onSubmit={handleSubmit} className="space-y-3">
         <input
           type="text"
-          placeholder="Titel"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          placeholder="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
           className="w-full border p-2"
           required
         />
