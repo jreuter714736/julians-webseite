@@ -102,7 +102,12 @@ const AdminOrders = () => {
               <select
                 value={order.status}
                 onChange={(e) => updateStatus(order.id, e.target.value)}
-                className="border rounded px-2 py-1"
+                className={`
+                  border rounded px-2 py-1 font-medium
+                  ${order.status === "Offen" ? "text-yellow-600 border-yellow-400" : ""}
+                  ${order.status === "Versendet" ? "text-green-600 border-green-400" : ""}
+                  ${order.status === "Storniert" ? "text-red-600 border-red-400" : ""}
+                `}
               >
                 <option value="Offen">Offen</option>
                 <option value="Versendet">Versendet</option>
