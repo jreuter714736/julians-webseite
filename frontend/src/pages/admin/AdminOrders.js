@@ -6,16 +6,32 @@ const AdminOrders = () => {
 
   const fetchOrders = () => {
     const token = localStorage.getItem("token");
-
+  
     fetch("http://localhost:4000/api/orders", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((res) => res.json())
-      .then((data) => setOrders(data))
-      .catch((err) => console.error("Fehler beim Laden:", err));
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Fehler beim Laden der Bestellungen");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setOrders(data);
+        } else {
+          setOrders([]);
+          toast.error("Unerwartete Antwort vom Server");
+        }
+      })
+      .catch((err) => {
+        console.error("Fehler beim Laden:", err);
+        toast.error("Keine Berechtigung oder Serverfehler");
+      });
   };
+  
 
   useEffect(() => {
     fetchOrders();
@@ -54,7 +70,7 @@ const AdminOrders = () => {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">📦 Bestellungen</h1>
-      {orders.length === 0 ? (
+      {!Array.isArray(orders) || orders.length === 0 ? (
         <p>Keine Bestellungen vorhanden.</p>
       ) : (
         <ul className="space-y-6">
@@ -71,7 +87,7 @@ const AdminOrders = () => {
               </p>
 
               <ul className="ml-4 list-disc mb-2">
-                {JSON.parse(order.items).map((item) => (
+              {(typeof order.items === "string" ? JSON.parse(order.items) : order.items).map((item) => (
                   <li key={item.id}>
                     {item.name} – {item.quantity} × €{Number(item.price).toFixed(2)}
                   </li>

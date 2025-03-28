@@ -31,13 +31,7 @@ router.post("/", authenticateToken, async (req, res) => {
 
 
 // Alle Bestellungen abrufen (nur für Admin)
-router.get("/", authenticateToken, async (req, res) => {
-  const isAdmin = req.user.isAdmin;
-
-  if (!isAdmin) {
-    return res.status(403).json({ error: "Zugriff verweigert" });
-  }
-
+router.get("/", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const orders = await knex("orders").orderBy("created_at", "desc");
     res.json(orders);
@@ -46,6 +40,7 @@ router.get("/", authenticateToken, async (req, res) => {
     res.status(500).json({ error: "Fehler beim Abrufen der Bestellungen" });
   }
 });
+
 
 
 // ✅ Bestellstatus aktualisieren (nur für Admins)
