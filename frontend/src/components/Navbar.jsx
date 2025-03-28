@@ -15,7 +15,7 @@ const Navbar = () => {
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        setIsAdmin(payload.is_admin === true); // ✅ korrekte Rolle
+        setIsAdmin(payload.isAdmin === true); // ✅ richtiges Feld
       } catch (err) {
         console.error("Fehler beim Token-Parsing:", err);
         setIsAdmin(false);
